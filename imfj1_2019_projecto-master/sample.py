@@ -1,11 +1,11 @@
-# Import pygame into our program
+# Import pygame into our programin
 import pygame
 import pygame.freetype
 import time
 
 from scene import *
 from object3d import *
-from mesh1 import *
+from mesh import *
 from material import *
 from color import *
 
@@ -15,7 +15,7 @@ def main():
     pygame.init()
 
     # Define the size/resolution of our window
-    res_x = 640
+    res_x = 645
     res_y = 480
 
     # Create a window and a display surface
@@ -40,23 +40,26 @@ def main():
     # Create a second object, and add it as a child of the first object
     # When the first object rotates, this one will also mimic the transform
     obj2 = Object3d("ChildObject")
-    obj2.position += vector3(0, 0, 0)
+    obj2.position += vector3(0, 0.75, 0)
     obj2.mesh = Mesh.create_cube((0.5, 0.5, 0.5))
     obj2.material = Material(color(0,1,0,1), "TestMaterial2")
     obj1.add_child(obj2)
 
     # Specify the rotation of the object. It will rotate 15 degrees around the axis given, 
     # every second
-    angle = 15
+    angle = 0
     axis = vector3(1,0.7,0.2)
-    axis = vector3(1,0,0)
     axis.normalize()
+    up, down, right, left,far, close,rot_up, rot_down, rot_right, rot_left, pag_down, pag_up = False, False, False, False, False, False,False,False,False,False,False,False
 
     # Timer
     delta_time = 0
     prev_time = time.time()
 
-    # Game loop, runs forever
+    pygame.mouse.set_visible(False)
+    pygame.event.set_grab(True)
+
+    # Game loop, runs forever6
     while (True):
         # Process OS events
         for event in pygame.event.get():
@@ -68,45 +71,103 @@ def main():
                 if (event.key == pygame.K_ESCAPE):
                     return
                 if (event.key == pygame.K_UP):
-                    angle =- 30
-                    axis = vector3(1,0,0)
+                    rot_up = True
                 if (event.key == pygame.K_LEFT):
-                    angle =- 30
-                    axis = vector3(0,1,0)
+                    rot_left = True
                 if (event.key == pygame.K_DOWN):
-                    angle =+ 30
-                    axis = vector3(1,0,0)
+                    rot_down = True
                 if (event.key == pygame.K_RIGHT):
-                    angle =+ 30
-                    axis = vector3(0,1,0)
+                    rot_right = True
                 if (event.key == pygame.K_PAGEDOWN):
-                    angle =- 30
-                    axis = vector3(0,0,1)
+                    pag_down = True
                 if (event.key == pygame.K_PAGEUP):
-                    angle =+ 30
-                    axis = vector3(0,0,1)
+                    pag_up = True
                 if (event.key == pygame.K_w):
-                    obj1.position = vector3(0, 0.2, 0) + obj1.position
+                   up = True
                 if (event.key == pygame.K_d):
-                    obj1.position = vector3(0.2, 0, 0) + obj1.position
+                    right = True
                 if (event.key == pygame.K_s):
-                    obj1.position = vector3(0, -0.2, 0) + obj1.position
+                    down = True
                 if (event.key == pygame.K_a):
-                     obj1.position = vector3(-0.2, 0, 0) + obj1.position
+                    left = True
                 if (event.key == pygame.K_q):
-                    obj1.position = vector3(0, 0, 0.2) + obj1.position
+                    far = True
                 if (event.key == pygame.K_e):
-                    obj1.position = vector3(0, 0,-0.2) + obj1.position
-            else:
-                axis = vector3(0,0,0)
+                    close = True
+
+            elif (event.type == pygame.KEYUP):
+                if (event.key == pygame.K_UP):
+                    rot_up = False
+                if (event.key == pygame.K_LEFT):
+                    rot_left = False
+                if (event.key == pygame.K_DOWN):
+                    rot_down = False
+                if (event.key == pygame.K_RIGHT):
+                    rot_right = False
+                if (event.key == pygame.K_PAGEDOWN):
+                    pag_down = False
+                if (event.key == pygame.K_PAGEUP):
+                    pag_up = False
+                if (event.key == pygame.K_w):
+                   up = False
+                if (event.key == pygame.K_d):
+                    right = False
+                if (event.key == pygame.K_s):
+                    down = False
+                if (event.key == pygame.K_a):
+                    left = False
+                if (event.key == pygame.K_q):
+                    far = False
+                if (event.key == pygame.K_e):
+                    close = False
+
+        if up:
+            obj1.position += vector3(0, 0.002, 0)
+
+        if right:
+            obj1.position += vector3(0.002, 0, 0)
+
+        if down:
+            obj1.position += vector3(0, -0.002, 0)
+
+        if left:
+            obj1.position += vector3(-0.002, 0, 0)
+
+        if far:
+            obj1.position += vector3(0.002, 0, 0)
+
+        if close:
+            obj1.position += vector3(-0.002, 0, 0)
+
+        if rot_up:
+            q = from_rotation_vector((vector3(1,0,0) * math.radians(- 45) * delta_time).to_np3())
+            obj1.rotation = q * obj1.rotation
+
+        if rot_down:
+            q = from_rotation_vector((vector3(1,0,0) * math.radians(45) * delta_time).to_np3())
+            obj1.rotation = q * obj1.rotation
+
+        if rot_right:
+            q = from_rotation_vector((vector3(0,1,0) * math.radians(45) * delta_time).to_np3())
+            obj1.rotation = q * obj1.rotation
+
+        if rot_left:
+            q = from_rotation_vector((vector3(0,1,0) * math.radians(- 45) * delta_time).to_np3())
+            obj1.rotation = q * obj1.rotation
+
+        if pag_down:
+            q = from_rotation_vector((vector3(0,0,1) * math.radians(- 45) * delta_time).to_np3())
+            obj1.rotation = q * obj1.rotation
+
+        if pag_up:
+            q = from_rotation_vector((vector3(0,0,1) * math.radians(45) * delta_time).to_np3())
+            obj1.rotation = q * obj1.rotation
+
+
 
 
         # Clears the screen with a very dark blue (0, 0, 20)
         screen.fill((0,0,0))
-
-        # Rotates the object, considering the time passed (not linked to frame rate)
-        q = from_rotation_vector((axis * math.radians(angle) * delta_time).to_np3())
-        obj1.rotation = q * obj1.rotation
 
         scene.render(screen)
 
