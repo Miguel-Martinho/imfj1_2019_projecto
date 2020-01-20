@@ -5,7 +5,7 @@ import time
 
 from scene import *
 from object3d import *
-from mesh import *
+from mesh1 import *
 from material import *
 from color import *
 
@@ -40,7 +40,7 @@ def main():
     # Create a second object, and add it as a child of the first object
     # When the first object rotates, this one will also mimic the transform
     obj2 = Object3d("ChildObject")
-    obj2.position += vector3(0, 0.75, 0)
+    obj2.position += vector3(0, 0, 0)
     obj2.mesh = Mesh.create_cube((0.5, 0.5, 0.5))
     obj2.material = Material(color(0,1,0,1), "TestMaterial2")
     obj1.add_child(obj2)
@@ -67,21 +67,39 @@ def main():
             elif (event.type == pygame.KEYDOWN):
                 if (event.key == pygame.K_ESCAPE):
                     return
+                if (event.key == pygame.K_UP):
+                    angle =- 30
+                    axis = vector3(1,0,0)
+                if (event.key == pygame.K_LEFT):
+                    angle =- 30
+                    axis = vector3(0,1,0)
+                if (event.key == pygame.K_DOWN):
+                    angle =+ 30
+                    axis = vector3(1,0,0)
+                if (event.key == pygame.K_RIGHT):
+                    angle =+ 30
+                    axis = vector3(0,1,0)
+                if (event.key == pygame.K_PAGEDOWN):
+                    angle =- 30
+                    axis = vector3(0,0,1)
+                if (event.key == pygame.K_PAGEUP):
+                    angle =+ 30
+                    axis = vector3(0,0,1)
                 if (event.key == pygame.K_w):
-                    angle = -15
-                    axis = vector3(1,0,0)
-                if (event.key == pygame.K_a):
-                    angle = -15
-                    axis = vector3(0,1,0)
-                if (event.key == pygame.K_s):
-                    angle = 15
-                    axis = vector3(1,0,0)
+                    obj1.position = vector3(0, 0.2, 0) + obj1.position
                 if (event.key == pygame.K_d):
-                    angle = 15
-                    axis = vector3(0,1,0)
+                    obj1.position = vector3(0.2, 0, 0) + obj1.position
+                if (event.key == pygame.K_s):
+                    obj1.position = vector3(0, -0.2, 0) + obj1.position
+                if (event.key == pygame.K_a):
+                     obj1.position = vector3(-0.2, 0, 0) + obj1.position
+                if (event.key == pygame.K_q):
+                    obj1.position = vector3(0, 0, 0.2) + obj1.position
+                if (event.key == pygame.K_e):
+                    obj1.position = vector3(0, 0,-0.2) + obj1.position
             else:
-                angle = 0
                 axis = vector3(0,0,0)
+
 
         # Clears the screen with a very dark blue (0, 0, 20)
         screen.fill((0,0,0))
